@@ -1,54 +1,36 @@
 import streamlit as st
+import pandas as pd
+import os
+from datetime import datetime
 
-# --------------------
-# 기본 페이지 설정
-# --------------------
+# =========================
+# 설정
+# =========================
 st.set_page_config(
     page_title="술 취향 설문 & 추천",
     page_icon="🍶",
     layout="centered"
 )
 
-# --------------------
-# 헤더 / 설명
-# --------------------
-st.title("🍷 취향 기반 술 추천기")
+DATA_PATH = "survey_data.csv"
+
+st.title("🍷 실시간 술 취향 설문 & 추천")
 st.markdown(
     """
-    간단한 **설문조사**를 통해  
-    당신의 취향에 맞는 **위스키, 사케, 전통주, 와인**을 추천해 드립니다.  
-    아래 질문에 편하게 답해 주세요 😄
+    발표 시간 동안만 운영되는 **실시간 설문 페이지**입니다.  
+    아래 설문에 답하면, 나중에 모두 함께 **취향 통계와 추천 주종 분포**를 그래프로 확인합니다.
     """
 )
 
-# --------------------
-# 상단 이미지 (플레이스홀더 이미지)
-# --------------------
-col_img1, col_img2 = st.columns(2)
-
-with col_img1:
-    st.image(
-        "https://via.placeholder.com/400x250?text=Whisky+%F0%9F%8D%B7",
-        caption="위스키 / 사케 등 증류주",
-        use_column_width=True
-    )
-
-with col_img2:
-    st.image(
-        "https://via.placeholder.com/400x250?text=Wine+%F0%9F%8D%B7",
-        caption="와인 / 전통주 등 발효주",
-        use_column_width=True
-    )
-
 st.markdown("---")
 
-# --------------------
-# 설문 폼
-# --------------------
+# =========================
+# 1. 설문 폼
+# =========================
 st.header("1️⃣ 취향 설문")
 
 with st.form("preference_form"):
-    st.subheader("맛 / 향 취향")
+    nickname = st.text_input("닉네임 또는 이니셜 (선택)", "")
 
     flavor = st.multiselect(
         "좋아하는 맛/향을 골라보세요. (복수 선택 가능)",
@@ -66,8 +48,6 @@ with st.form("preference_form"):
         options=["거의 없음", "약간 단 편", "적당히 단 편", "꽤 단 편", "아주 달게"],
         value="약간 단 편"
     )
-
-    st.subheader("도수 / 상황")
 
     abv = st.slider(
         "편하게 즐기기 좋은 도수 범위는?",
@@ -101,122 +81,99 @@ with st.form("preference_form"):
         default=[]
     )
 
-    submitted = st.form_submit_button("✨ 추천 받기")
+    submitted = st.form_submit_button("✨ 설문 제출하기")
 
 
-# --------------------
-# 추천 로직 함수
-# --------------------
-def recommend_drink(flavor, body, sweetness, abv, occasion, budget, carbonation, prefer_type):
+# =========================
+# 2. 간단 추천 로직
+# =========================
+def recommend_type(flavor, body, sweetness, abv, occasion, budget, carbonation, prefer_type):
     min_abv, max_abv = abv
+    rec = "와인"  # 기본값
 
-    # 간단한 룰 기반 추천 예시 (나중에 네가 마음대로 고도화 가능)
-    candidates = []
+    if max_abv >= 35 and ("탄향/스모키" in flavor or "곡물/빵향" in flavor):
+        rec = "위스키"
+    elif "달콤함" in flavor and min_abv <= 20:
+        rec = "전통주"
+    elif "과일향" in flavor and min_abv <= 20:
+        rec = "사케"
 
-    # 1. 위스키 추천
-    if (min_abv >= 15 or max_abv >= 35) and ("탄향/스모키" in flavor or "곡물/빵향" in flavor):
-        if budget in ["5~10만 원", "10만 원 이상"]:
-            candidates.append({
-                "type": "위스키",
-                "name": "스모키 싱글 몰트 위스키",
-                "desc": "탄향과 곡물향이 잘 살아있는 싱글 몰트 스타일. 스트레이트 또는 온더락으로 천천히 즐기기 좋습니다.",
-                "img": "https://via.placeholder.com/400x250?text=Smoky+Whisky"
-            })
-        else:
-            candidates.append({
-                "type": "위스키",
-                "name": "부드러운 블렌디드 위스키",
-                "desc": "알코올 자극은 덜하고, 곡물향과 단맛이 적당해 입문용으로 좋습니다.",
-                "img": "https://via.placeholder.com/400x250?text=Blended+Whisky"
-            })
-
-    # 2. 사케 추천
-    if min_abv <= 20 and "쌉쌀함" in flavor or "과일향" in flavor:
-        if sweetness in ["약간 단 편", "적당히 단 편", "꽤 단 편"]:
-            candidates.append({
-                "type": "사케",
-                "name": "준마이 긴조 계열 사케",
-                "desc": "은은한 과일향과 부드러운 감칠맛이 있어, 회나 가벼운 요리와 곁들이기 좋습니다.",
-                "img": "https://via.placeholder.com/400x250?text=Sake"
-            })
-        else:
-            candidates.append({
-                "type": "사케",
-                "name": "드라이 타입 준마이 사케",
-                "desc": "단맛이 적고 깔끔하게 떨어져, 기름진 음식이나 튀김류와 잘 어울립니다.",
-                "img": "https://via.placeholder.com/400x250?text=Dry+Sake"
-            })
-
-    # 3. 전통주 추천
-    if "달콤함" in flavor or sweetness in ["적당히 단 편", "꽤 단 편", "아주 달게"]:
-        if carbonation == "탄산 있는 게 좋다":
-            candidates.append({
-                "type": "전통주",
-                "name": "탄산 막걸리 / 스파클링 탁주",
-                "desc": "은은한 단맛과 산미, 탄산이 어우러져 가볍게 즐기기 좋은 스타일입니다.",
-                "img": "https://via.placeholder.com/400x250?text=Sparkling+Makgeolli"
-            })
-        else:
-            candidates.append({
-                "type": "전통주",
-                "name": "프리미엄 약주 / 청주",
-                "desc": "깔끔한 곡물향과 단맛이 조화로운 고급 약주로, 선물용이나 식사와 곁들이기 좋습니다.",
-                "img": "https://via.placeholder.com/400x250?text=Korean+Rice+Wine"
-            })
-
-    # 4. 와인 추천
-    if "과일향" in flavor or occasion in ["데이트/분위기용", "친구들과 모임"]:
-        if body == "가볍고 산뜻한 편":
-            candidates.append({
-                "type": "와인",
-                "name": "산뜻한 화이트 와인 (소비뇽 블랑 계열)",
-                "desc": "상큼한 산미와 시트러스/열대과일 향이 특징으로, 가벼운 음식과 잘 어울립니다.",
-                "img": "https://via.placeholder.com/400x250?text=White+Wine"
-            })
-        else:
-            candidates.append({
-                "type": "와인",
-                "name": "미디엄 바디 레드 와인",
-                "desc": "과일향과 약간의 탄닌이 조화로운 스타일로, 파스타/고기 요리와 두루 잘 어울립니다.",
-                "img": "https://via.placeholder.com/400x250?text=Red+Wine"
-            })
-
-    # 5. 선호 주종 필터링 (선택한 경우만)
     if prefer_type:
-        filtered = [c for c in candidates if c["type"] in prefer_type]
-        if filtered:
-            candidates = filtered
+        rec = prefer_type[0]  # 선호 주종이 있으면 그 중 첫 번째로 덮어쓰기 (단순화)
 
-    # 후보가 하나도 없으면 기본 추천
-    if not candidates:
-        candidates.append({
-            "type": "라이트한 주종",
-            "name": "가벼운 화이트 와인 또는 탄산 막걸리",
-            "desc": "도수 부담이 적고, 다양한 음식과 무난하게 어울려 입문용으로 추천드립니다.",
-            "img": "https://via.placeholder.com/400x250?text=Light+Drink"
-        })
-
-    return candidates
+    return rec
 
 
-# --------------------
-# 결과 출력
-# --------------------
+# =========================
+# 3. 제출 시 CSV 저장
+# =========================
 if submitted:
-    st.header("2️⃣ 추천 결과")
+    recommended = recommend_type(flavor, body, sweetness, abv, occasion, budget, carbonation, prefer_type)
 
-    recs = recommend_drink(flavor, body, sweetness, abv, occasion, budget, carbonation, prefer_type)
+    # 1) 새 레코드 생성
+    new_row = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "nickname": nickname,
+        "flavor": ";".join(flavor),
+        "body": body,
+        "sweetness": sweetness,
+        "abv_min": abv[0],
+        "abv_max": abv[1],
+        "occasion": occasion,
+        "budget": budget,
+        "carbonation": carbonation,
+        "prefer_type": ";".join(prefer_type) if prefer_type else "",
+        "recommended_type": recommended,
+    }
 
-    for rec in recs:
-        st.subheader(f"✅ 추천 주종: {rec['type']} - {rec['name']}")
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            st.image(rec["img"], use_column_width=True)
-        with col2:
-            st.write(rec["desc"])
-            st.caption(f"상황: {occasion} · 예산: {budget} · 선호 도수: {abv[0]}~{abv[1]}%")
+    # 2) 기존 CSV에 append
+    if os.path.exists(DATA_PATH):
+        df = pd.read_csv(DATA_PATH)
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    else:
+        df = pd.DataFrame([new_row])
 
-    st.markdown("---")
-    st.info("※ 실제 제품 이름이 아니라, 스타일(타입)에 대한 추천 예시입니다. 나중에 브랜드/제품명으로 확장할 수 있어요.")
+    df.to_csv(DATA_PATH, index=False)
+
+    st.success(f"설문이 제출되었습니다! (예상 추천 주종: **{recommended}**)")
+
+st.markdown("---")
+
+# =========================
+# 4. 발표용 결과 섹션
+# =========================
+st.header("2️⃣ 실시간 설문 결과 (발표용)")
+
+st.caption("※ 발표자가 화면을 공유하고 이 섹션을 보여주면 됩니다. 응답이 들어올 때마다 페이지 새로고침하면 그래프가 업데이트됩니다.")
+
+if os.path.exists(DATA_PATH):
+    df = pd.read_csv(DATA_PATH)
+
+    st.subheader(f"현재까지 응답 수: {len(df)}명")
+
+    # 보기 쉽게 최근 응답 몇 개
+    with st.expander("📋 최근 응답 보기 (옵션)", expanded=False):
+        st.dataframe(df.tail(10))
+
+    # 1) 추천 주종 분포
+    st.subheader("🍶 추천 주종 분포")
+    type_counts = df["recommended_type"].value_counts()
+    st.bar_chart(type_counts)
+
+    # 2) 단맛 선호도
+    st.subheader("🍭 단맛 선호도 분포")
+    sweet_counts = df["sweetness"].value_counts().sort_index()
+    st.bar_chart(sweet_counts)
+
+    # 3) 마시는 상황 분포
+    st.subheader("🎯 마시는 상황(occasion) 분포")
+    occ_counts = df["occasion"].value_counts()
+    st.bar_chart(occ_counts)
+
+    # 4) 예산 분포
+    st.subheader("💸 예산 분포")
+    budget_counts = df["budget"].value_counts().sort_index()
+    st.bar_chart(budget_counts)
+
 else:
-    st.info("위 설문을 입력하고 **'✨ 추천 받기'** 버튼을 눌러보세요!")
+    st.info("아직 설문 응답이 없습니다. 청중에게 설문 링크를 공유한 뒤, 응답이 들어오면 이 영역을 새로고침해서 결과를 확인하세요.")
