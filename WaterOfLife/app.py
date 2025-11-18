@@ -7,7 +7,9 @@ st.set_page_config(
     layout="centered"
 )
 
+#title
 st.title("🍷 술 취향 설문 & 추천 서비스")
+st.sidebar.title("생명의물")
 
 st.markdown(
     """
