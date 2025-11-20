@@ -13,14 +13,14 @@ st.sidebar.markdown("취향 기반 술 추천 바")
 
 # 메인 타이틀
 st.title("🍶 생명의물")
+st.markdown("### 취향으로 찾아가는, 나만의 한 잔")
+st.image("images/mainpage.jpg")
 
 st.markdown(
     """
-    ### 취향으로 찾아가는, 나만의 한 잔
-
     **생명의물**은 여러 종류의 술을 단순히 나열하는 곳이 아니라,  
-    **당신의 취향을 설문으로 파악해서 가장 잘 어울리는 술을 추천해 주고,  
-    실제로 우리 매장에서 그 술을 경험해 보게 하는 “취향 기반 술 바”**입니다.
+    당신의 취향을 설문으로 파악해서 가장 잘 어울리는 술을 추천해 주고,  
+    실제로 그 술을 경험할 수 있는 공간입니다.
     """
 )
 
@@ -50,16 +50,15 @@ with col1:
 
         ---
 
-        이 웹에서는 **간단한 설문을 통해 당신의 맛·향·도수·상황 취향을 파악**한 뒤,  
-        그 결과를 바탕으로 **우리 매장에서 추천해 줄 술 스타일**을 제안합니다.
+        **간단한 설문을 통해 당신의 맛·향·도수·분위기 취향을 파악**한 뒤,  
+        그 결과를 바탕으로 우리의 공간인 **생명의 물**에서 다양한 술을 경험해볼 수 있습니다.
         """
     )
 
 with col2:
     st.image(
-        "https://mapleland.gg/item/5180000/opengraph-image?ef5f0a375b326fb6",
-        caption="당신의 취향에 맞는 한 잔을 찾는 공간, 생명의물",
-        use_column_width=True
+        "images/mainpage_warehouse.png",
+        caption="당신의 취향에 맞는 한 잔을 찾는 공간, 생명의물"
     )
 
 st.markdown("---")
@@ -94,7 +93,7 @@ with col_b:
 with col_c:
     st.markdown(
         """
-        ### 3. 우리 매장에서 실제로 즐기기  
+        ### 3. 우리의  공간에서 실제로 즐기기  
         - 추천 결과를 바탕으로  
           **매장에서 한 잔 시음**  
         - 메뉴 선택이 어렵다면  
@@ -114,12 +113,119 @@ st.markdown(
     """
 )
 
-# 🔽 여기 버튼이 설문 페이지로 이동하는 부분입니다.
-# 설문 페이지 파일이 `pages/01_설문하기.py`라면 그대로 쓰고,
-# 파일명이 다르면 경로만 바꿔 주세요.
-st.page_link(
-    "pages/01_설문하기.py",
-    label="✨ 나에게 맞는 술 찾기",
-    icon="🍸",
-    use_container_width=True,
+# survey_url = "/page=01_survey"  # 예: pages/01_survey.py 파일일 때 보통 이렇게 됨
+
+# background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 40%, #f6d365 100%);
+
+st.markdown(
+    """
+    <style>
+    div.stButton > button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 18px 40px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #4f71ff 0%, #6cc6ff 50%, #90e0ff 100%);
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+        animation: pulse 1.5s infinite;
+        transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    }
+    div.stButton > button:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+    }
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 154, 158, 0.7);
+        }
+        70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 18px rgba(255, 154, 158, 0);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(255, 154, 158, 0);
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
 )
+
+# 🔹 실제 버튼 + 페이지 이동
+clicked = st.button("🍸 나에게 맞는 술 찾기")
+
+if clicked:
+    # 설문 페이지 파일명이 pages/01_survey.py 라고 가정
+    st.switch_page("pages/01_survey.py")
+
+
+# st.markdown(
+#     f"""
+#     <style>
+#     .pulse-button {{
+#         display: inline-flex;
+#         align-items: center;
+#         justify-content: center;
+#         padding: 18px 40px;
+#         border-radius: 999px;
+#         background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 40%, #f6d365 100%);
+#         color: #ffffff;
+#         font-size: 22px;
+#         font-weight: 700;
+#         text-decoration: none;
+#         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+#         border: none;
+#         cursor: pointer;
+#         animation: pulse 1.5s infinite;
+#         transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+#     }}
+#     .pulse-button span.icon {{
+#         font-size: 32px;
+#         margin-right: 10px;
+#     }}
+#     .pulse-button:hover {{
+#         transform: translateY(-3px) scale(1.03);
+#         box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+#     }}
+#     @keyframes pulse {{
+#         0% {{
+#             transform: scale(1);
+#             box-shadow: 0 0 0 0 rgba(255, 154, 158, 0.7);
+#         }}
+#         70% {{
+#             transform: scale(1.05);
+#             box-shadow: 0 0 0 18px rgba(255, 154, 158, 0);
+#         }}
+#         100% {{
+#             transform: scale(1);
+#             box-shadow: 0 0 0 0 rgba(255, 154, 158, 0);
+#         }}
+#     }}
+#     </style>
+
+#     <div style="text-align: center; margin-top: 32px; margin-bottom: 16px;">
+#         <a href="{survey_url}" class="pulse-button" target="_self">
+#             <span class="icon">🍸</span>
+#             <span>나에게 맞는 술 찾기</span>
+#         </a>
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
+#Survey Link
+# '''
+# st.page_link(
+#     "pages/01_survey.py",
+#     label="✨ 나에게 맞는 술 찾기",
+#     icon="🍸",
+#     use_container_width=True,
+# )
+# '''
