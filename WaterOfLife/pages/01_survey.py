@@ -105,7 +105,7 @@ with st.form("survey_form"):
         "",
         [
             "달콤한 맛이 좋아요",
-            "쌉싸름하거나 묵직한 맛이 좋아요",
+            "강하고 묵직한 맛이 좋아요",
             "상큼/깔끔한 스타일이 좋아요",
             "잘 모르겠어요, 추천에 맡길래요",
         ],
@@ -193,7 +193,7 @@ def recommend_drink(companion, mood, abv, taste_pref, food):
         scores["전통주"] += 2
         scores["와인"] += 1
         scores["위스키"] += 1
-    elif taste_pref == "쌉싸름하거나 묵직한 맛이 좋아요":
+    elif taste_pref == "강하고 묵직한 맛이 좋아요":
         scores["위스키"] += 2
         scores["와인"] += 1
     elif taste_pref == "상큼/깔끔한 스타일이 좋아요":
