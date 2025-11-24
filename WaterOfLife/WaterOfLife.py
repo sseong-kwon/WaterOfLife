@@ -3,7 +3,7 @@ import streamlit as st
 # 페이지 기본 설정
 st.set_page_config(
     page_title="생명의물",
-    page_icon="🍶",
+    page_icon="images/SiteLogo.png",
     layout="centered"
 )
 
@@ -12,13 +12,14 @@ st.sidebar.title("🍶 생명의물")
 st.sidebar.markdown("취향 기반 술 추천 바")
 
 # 메인 타이틀
-st.title("🍶 생명의물")
+st.image("images/0_LiqureMate.png")
+# st.title("🍶 생명의물")
 st.markdown("### 취향으로 찾아가는, 나만의 한 잔")
-st.image("WaterOfLife/images/mainpage.jpg")
+st.image("images/2_MainBanner.png")
 
 st.markdown(
     """
-    **생명의물**은 여러 종류의 술을 단순히 나열하는 곳이 아니라,  
+    **LiqureMate**는 여러 종류의 술을 단순히 나열하는 곳이 아니라,  
     당신의 취향을 설문으로 파악해서 가장 잘 어울리는 술을 추천해 주고,  
     실제로 그 술을 경험할 수 있는 공간입니다.
     """
@@ -57,7 +58,7 @@ with col1:
 
 with col2:
     st.image(
-        "WaterOfLife/images/mainpage_warehouse.png",
+        "images/mainpage_warehouse.png",
         caption="당신의 취향에 맞는 한 잔을 찾는 공간, 생명의물"
     )
 
