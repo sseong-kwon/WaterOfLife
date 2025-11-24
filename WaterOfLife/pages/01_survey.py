@@ -312,60 +312,56 @@ if submitted:
 """
     )
 
-    # 🔥 통계 보기 버튼 스타일 + HTML
-    st.markdown(
-        """
-        <style>
-        .stats-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px 32px;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #4f71ff 0%, #6cc6ff 50%, #90e0ff 100%);
-            color: #ffffff !important;  
-            font-size: 18px;
-            font-weight: 700;
-            text-decoration: none !important; 
-            cursor: pointer;
-            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
-            animation: stats-pulse 1.5s infinite;
-            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
-            margin-top: 8px;
-        }   
-        /* hover 시에도 글자 흰색 유지 */
-        .stats-button:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
-            color: #ffffff !important;
-            text-decoration: none !important;
+    # 🔥 통계 버튼 스타일 (일반 st.button용)
+st.markdown(
+    """
+    <style>
+    button[kind="secondary"] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 32px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #4f71ff 0%, #6cc6ff 50%, #90e0ff 100%);
+        color: #ffffff !important;
+        font-size: 18px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+        animation: stats-pulse 1.5s infinite;
+        transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    }
+    button[kind="secondary"]:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
+        color: #ffffff !important;
+    }
+    @keyframes stats-pulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(79, 113, 255, 0.4);
         }
-
-        /* 애니메이션 그대로 */
-        @keyframes stats-pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(79, 113, 255, 0.4);
-            }
-            70% {
-                transform: scale(1.04);
-                box-shadow: 0 0 0 16px rgba(79, 113, 255, 0);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(79, 113, 255, 0);
-            }
+        70% {
+            transform: scale(1.04);
+            box-shadow: 0 0 0 16px rgba(79, 113, 255, 0);
         }
-        </style>
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(79, 113, 255, 0);
+        }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
-        <div style="text-align: center; margin-top: 10px; margin-bottom: 4px;">
-            <a href="/02_stats" class="stats-button">
-                📊 다른 사람들 취향 통계 보러가기
-            </a>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+# 🔁 통계 페이지로 이동 (같은 세션에서)
+cols = st.columns([1, 2, 1])
+with cols[1]:
+    go_stats = st.button("📊 다른 사람들 취향 통계 보러가기")
+if go_stats:
+    st.switch_page("pages/02_stats.py")
 
     # 🔁 메인으로 돌아가기 
     st.page_link("WaterOfLife.py", label="🏠 메인으로 돌아가기", icon="🏠")
