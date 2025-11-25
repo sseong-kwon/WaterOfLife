@@ -69,8 +69,6 @@ st.set_page_config(
 
 # GA page_view: main
 inject_ga("main")
-st.write("GA Enabled:", GA_ENABLED)
-st.write("GA_ID:", GA_ID if GA_ENABLED else "no_secret")
 
 # 사이드바
 st.sidebar.title("🍶 생명의물")
