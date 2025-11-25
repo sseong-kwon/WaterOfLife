@@ -1,4 +1,64 @@
 import streamlit as st
+import streamlit.components.v1 as components
+import requests
+import uuid
+
+# GA 공통 유틸
+try:
+    GA_ID = st.secrets["ga"]["measurement_id"]
+    GA_API_SECRET = st.secrets["ga"]["api_secret"]
+    GA_ENABLED = True
+except Exception:
+    GA_ENABLED = False
+
+
+def inject_ga(page_name: str):
+    if not GA_ENABLED:
+        return
+
+    ga_js = f"""
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){{dataLayer.push(arguments);}}
+      gtag('js', new Date());
+      gtag('config', '{GA_ID}', {{
+        'page_title': '{page_name}',
+        'page_path': '/{page_name}'
+      }});
+    </script>
+    """
+    components.html(ga_js, height=0)
+
+
+def send_ga_event(event_name: str, params: dict | None = None):
+    if not GA_ENABLED:
+        return
+
+    if params is None:
+        params = {}
+
+    payload = {
+        "client_id": str(uuid.uuid4()),
+        "events": [
+            {
+                "name": event_name,
+                "params": params,
+            }
+        ],
+    }
+
+    requests.post(
+        "https://www.google-analytics.com/mp/collect",
+        params={
+            "measurement_id": GA_ID,
+            "api_secret": GA_API_SECRET,
+        },
+        json=payload,
+        timeout=2,
+    )
+
 
 # 페이지 기본 설정
 st.set_page_config(
@@ -6,6 +66,11 @@ st.set_page_config(
     page_icon="WaterOfLife/images/1_SiteLogo.png",
     layout="centered"
 )
+
+# GA page_view: main
+inject_ga("main")
+st.write("GA Enabled:", GA_ENABLED)
+st.write("GA_ID:", GA_ID if GA_ENABLED else "no_secret")
 
 # 사이드바
 st.sidebar.title("🍶 생명의물")

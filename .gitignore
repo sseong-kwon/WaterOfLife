@@ -1,0 +1,19 @@
+# Python venv
+venv/
+.env/
+.venv/
+
+# Bytecode
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Environment files
+*.env
+.env.*
+
+.streamlit/
+
+data/
