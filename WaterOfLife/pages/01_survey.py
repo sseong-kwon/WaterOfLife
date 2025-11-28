@@ -14,15 +14,15 @@ def img_to_base64(path: str) -> str:
 @st.cache_data
 def load_springbank_images_b64():
     files = [
-        "images/springbank1.jpeg",
-        "images/springbank2.jpeg",
-        "images/springbank3.jpeg",
-        "images/springbank4.jpeg",
-        "images/springbank5.jpeg",
-        "images/springbank6.jpeg",
-        "images/springbank7.jpeg",
-        "images/springbank8.jpeg",
-        "images/springbank9.jpeg"
+        "WaterOfLife/images/springbank1.jpeg",
+        "WaterOfLife/images/springbank2.jpeg",
+        "WaterOfLife/images/springbank3.jpeg",
+        "WaterOfLife/images/springbank4.jpeg",
+        "WaterOfLife/images/springbank5.jpeg",
+        "WaterOfLife/images/springbank6.jpeg",
+        "WaterOfLife/images/springbank7.jpeg",
+        "WaterOfLife/images/springbank8.jpeg",
+        "WaterOfLife/images/springbank9.jpeg"
     ]
     result = []
     for p in files:
@@ -282,7 +282,7 @@ def get_recommendation_copy(category: str):
         **LiqureMate**에서 두 가지의 특별한 위스키를 추천해 드릴게요.
         """)
 
-        st.image("images/springbank10yo.jpg", width=400)
+        st.image("WaterOfLife/images/springbank10yo.jpg", width=400)
 
         st.markdown(
         """
@@ -296,8 +296,8 @@ def get_recommendation_copy(category: str):
         스프링뱅크 위스키와의 첫 만남이시라면, **스프링뱅크 10년**의 달콤하고 짠 균형미로 여러분을 초대합니다.
         """)
         imgs = [
-        "images/springbank1.png",
-        "images/springbank2.jpeg",
+        "WaterOfLife/images/springbank1.png",
+        "WaterOfLife/images/springbank2.jpeg",
         "images/springbank3.jpeg",
         "images/springbank4.jpeg",
         ]
@@ -358,7 +358,7 @@ def get_recommendation_copy(category: str):
     """)
         
         # 메인 병 사진
-        st.image("images/springbank10yo.jpg", width=400)
+        st.image("WaterOfLife/images/springbank10yo.jpg", width=400)
 
         st.markdown(
             """
@@ -423,7 +423,7 @@ def get_recommendation_copy(category: str):
         양조자의 손끝부터 발효, 숙성에 이르는 모든 과정을 살아 숨 쉬게 만든 ‘장인의 혼’이 담긴 한 병입니다.
         """)
 
-        st.image("images/sake.jpg", width=400)
+        st.image("WaterOfLife/images/sake.jpg", width=400)
         st.markdown("""        ---
 
         ### 🌸 노구치 사케의 매력 포인트
@@ -463,7 +463,7 @@ def get_recommendation_copy(category: str):
         LiquorMate에서 **입문자에게 가장 먼저 추천**하는 사케입니다.
         """)
 
-        st.image("images/sake2.jpg", width=500)
+        st.image("WaterOfLife/images/sake2.jpg", width=500)
         
         st.markdown("""
         ---
@@ -530,7 +530,7 @@ def get_recommendation_copy(category: str):
             """)
 
         # 원하면 이미지 추가 가능
-        st.image("images/hwayo41.png", width=400)
+        st.image("WaterOfLife/images/hwayo41.png", width=400)
 
         st.markdown("---")
 
@@ -557,7 +557,7 @@ def get_recommendation_copy(category: str):
             """)
 
         # 원하면 이미지 추가 가능
-        st.image("images/boksoondoga.jpg", width=500)
+        st.image("WaterOfLife/images/boksoondoga.jpg", width=500)
 
         st.markdown("""
         ---
@@ -608,7 +608,7 @@ def get_recommendation_copy(category: str):
             - 부드럽고 달콤한 과실미를 좋아하는 분
             """)
 
-        st.image("images/bread_and_butter.png", width=400)
+        st.image("WaterOfLife/images/bread_and_butter.png", width=400)
 
         st.markdown("---")
 
@@ -637,7 +637,7 @@ def get_recommendation_copy(category: str):
             - 회식, 파티, 남성적인 분위기의 술자리에 어울리는 와인을 찾는 분
             """)
 
-        st.image("images/19crimes.jpg", width=360)
+        st.image("WaterOfLife/images/19crimes.jpg", width=360)
 
         st.markdown("""
             ---
